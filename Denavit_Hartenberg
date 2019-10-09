@@ -1,0 +1,258 @@
+clear all
+clc
+
+prompt = 'Introduzca el valor de "L1": '; %Pide el valor de l1 "Traslaci�n en Y"
+L1 = input(prompt);
+prompt = 'Introduzca el valor de "L2": '; %Pide el valor de l2 "Traslaci�n en X"
+L2 = input(prompt);
+prompt = 'Introduzca el valor de "L3": '; %Pide el valor de l3 "Traslaci�n en X"
+L3 = input(prompt);
+
+
+prompt = 'Introduzca el valor en grados de theta 1: '; %Pide el valor de theta1
+angDeg = input(prompt);                            
+prompt = 'Introduzca el valor en grados de theta 2: '; %Pide el valor de theta2
+angDeg2 = input(prompt);
+prompt = 'Introduzca el valor en grados de theta 3: '; %Pide el valor de theta3
+angDeg3 = input(prompt);
+
+
+angRad = deg2rad(angDeg);     %Funci�n para radianes 1
+angRad2 = deg2rad(angDeg2);   %Funci�n para radianes 2
+angRad3 = deg2rad(angDeg3);   %Funci�n para radianes 3
+
+
+%%%%%%%%%%%%%%%%% Para theta 1
+if angDeg >= 0
+angVec = 0:0.1:angRad;
+else 
+angVec = 0:-0.1:angRad;
+end
+
+%%%%%%%%%%%%%%%%% Para theta 2
+if angDeg2 >= 0
+angVec2 = 0:0.1:angRad2;
+else 
+angVec2 = 0:-0.1:angRad2;
+end
+
+%%%%%%%%%%%%%%%%% Para theta 3
+if angDeg3 >= 0
+angVec3 = 0:0.1:angRad3;
+else 
+angVec3 = 0:-0.1:angRad3;
+end
+
+
+p0=[0 0 0]';    %Puntos iniciales
+
+%%%% CICLO PARA THETA 1
+for i=1:length(angVec)
+    clf
+   
+    line ([-15 15],[0 0],[0 0], 'color', [1 0 0], 'linewidth',1);     %Eje X Red
+    line ([0 0],[-15 15],[0 0], 'color', [0 1 0], 'linewidth',1);     %Eje Y Green
+    line ([0 0],[0 0],[-15 15], 'color', [0 0 1], 'linewidth',1);     %Eje Z Blue
+   
+    grid on
+    view(120,30)    %Formato para ver en 3D al inicio el plano
+    
+    %INICIA PRIMER ESLB�N
+    A1 = [cos(angVec(i)) 0 sin(angVec(i)) 0 ; sin(angVec(i)) 0 -cos(angVec(i)) 0 ; 0 1 0 L1; 0 0 0 1];  %Matr�z del punto 0 al 1
+    p1 = A1(1:3,4);
+    line([p0(1) p1(1)],[p0(2) p1(2)],[p0(3) p1(3)],'color' , [0.2 0.2 0.2], 'linewidth', 1.7)  %Imprime primer eslab�n
+    %TERMINA PRIMER ESLAB�N
+    
+    
+    %COMIENZA SEGUNDO ESLAB�N  
+    A2=[1 0 0 L2 ; 0 1 0 0 ; 0 0 1 0 ; 0 0 0 1];
+    TT1 = A1*A2;
+    p2 = TT1(1:3,4);
+    line([p1(1) p2(1)],[p1(2) p2(2)],[p1(3) p2(3)],'color' , [0.2 0.2 0.2], 'linewidth', 1.7)  %Imprime segundo eslab�n
+    %TERMINA SEGUNDO ESLAB�N
+    
+    
+    %COMIENZA TERCER ESLAB�N  
+    A3=[1 0 0 L3 ; 0 1 0 0 ; 0 0 1 0 ; 0 0 0 1];
+    TT2 = A1*A2*A3;
+    p3 = TT2(1:3,4);
+    line([p2(1) p3(1)],[p2(2) p3(2)],[p2(3) p3(3)],'color' , [0.2 0.2 0.2], 'linewidth', 1.7)  %Imprime tercer eslab�n
+    %TERMINA TERCER ESLAB�N
+    
+    
+    
+    
+    %COMIENZA A IMPRIMIR EJES COORDENADOS UNITARIOS 
+    ejeX1 = A1(1:3,1);              %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial X1
+    ejeY1 = A1(1:3,2);              %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Y1
+    ejeZ1 = A1(1:3,3);              %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Z1 
+    line([p0(1) ejeX1(1)],[p0(2) ejeX1(2)],[p0(3) ejeX1(3)], 'color', [1 0 0], 'linewidth',1.7) %Imprime X1 Red
+    line([p0(1) ejeY1(1)],[p0(2) ejeY1(2)],[p0(3) ejeY1(3)], 'color', [0 1 0], 'linewidth',1.7) %Imprime Y1 GReen
+    line([p0(1) ejeZ1(1)],[p0(2) ejeZ1(2)],[p0(3) ejeZ1(3)], 'color', [0 0 1], 'linewidth',1.7) %Imprime Z1 Blue  
+    
+    ejeX2 = p1+TT1(1:3,1);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial X2
+    ejeY2 = p1+TT1(1:3,2);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Y2
+    ejeZ2 = p1+TT1(1:3,3);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Z2 
+    line([p1(1) ejeX2(1)],[p1(2) ejeX2(2)],[p1(3) ejeX2(3)], 'color', [1 0 0], 'linewidth',1.7) %Imprime X2 Red
+    line([p1(1) ejeY2(1)],[p1(2) ejeY2(2)],[p1(3) ejeY2(3)], 'color', [0 1 0], 'linewidth',1.7) %Imprime Y2 GReen
+    line([p1(1) ejeZ2(1)],[p1(2) ejeZ2(2)],[p1(3) ejeZ2(3)], 'color', [0 0 1], 'linewidth',1.7) %Imprime Z2 Blue  
+    
+    ejeX3 = p2+TT2(1:3,1);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial X3
+    ejeY3 = p2+TT2(1:3,2);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Y3
+    ejeZ3 = p2+TT2(1:3,3);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Z3 
+    line([p2(1) ejeX3(1)],[p2(2) ejeX3(2)],[p2(3) ejeX3(3)], 'color', [1 0 0], 'linewidth',1.7) %Imprime X2 Red
+    line([p2(1) ejeY3(1)],[p2(2) ejeY3(2)],[p2(3) ejeY3(3)], 'color', [0 1 0], 'linewidth',1.7) %Imprime Y2 GReen
+    line([p2(1) ejeZ3(1)],[p2(2) ejeZ3(2)],[p2(3) ejeZ3(3)], 'color', [0 0 1], 'linewidth',1.7) %Imprime Z2 Blue 
+    
+    ejeX4 = p3+TT2(1:3,1);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial X3
+    ejeY4 = p3+TT2(1:3,2);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Y3
+    ejeZ4 = p3+TT2(1:3,3);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Z3 
+    line([p3(1) ejeX4(1)],[p3(2) ejeX4(2)],[p3(3) ejeX4(3)], 'color', [1 0 0], 'linewidth',1.7) %Imprime X2 Red
+    line([p3(1) ejeY4(1)],[p3(2) ejeY4(2)],[p3(3) ejeY4(3)], 'color', [0 1 0], 'linewidth',1.7) %Imprime Y2 GReen
+    line([p3(1) ejeZ4(1)],[p3(2) ejeZ4(2)],[p3(3) ejeZ4(3)], 'color', [0 0 1], 'linewidth',1.7) %Imprime Z2 Blue 
+    %TERMINA DE IMPRIMIR EJES COORDENADOS UNITARIOS 
+    
+    pause(0.1)
+end
+
+%%% CICLO PARA THETA 2
+for i=1:length(angVec2)
+    clf
+   
+    line ([-15 15],[0 0],[0 0], 'color', [1 0 0], 'linewidth',1);     %Eje X Red
+    line ([0 0],[-15 15],[0 0], 'color', [0 1 0], 'linewidth',1);     %Eje Y Green
+    line ([0 0],[0 0],[-15 15], 'color', [0 0 1], 'linewidth',1);     %Eje Z Blue
+   
+    grid on
+    view(120,30)    %Formato para ver en 3D al inicio el plano
+    
+    %INICIA PRIMER ESLB�N
+    p1 = A1(1:3,4);
+    line([p0(1) p1(1)],[p0(2) p1(2)],[p0(3) p1(3)],'color' , [0.2 0.2 0.2], 'linewidth', 1.7)  %Imprime primer eslab�n
+    %TERMINA PRIMER ESLAB�N
+    
+    
+    %COMIENZA SEGUNDO ESLAB�N  
+    A2=[cos(angVec2(i)) -sin(angVec2(i)) 0 L2*cos(angVec2(i)) ; sin(angVec2(i)) cos(angVec2(i)) 0 L2*sin(angVec2(i)) ; 0 0 1 0 ; 0 0 0 1 ];
+    TT1 = A1*A2;
+    p2 = TT1(1:3,4);
+    line([p1(1) p2(1)],[p1(2) p2(2)],[p1(3) p2(3)],'color' , [0.2 0.2 0.2], 'linewidth', 1.7)  %Imprime segundo eslab�n
+    %TERMINA SEGUNDO ESLAB�N
+    
+    
+    %COMIENZA TERCER ESLAB�N  
+    A3=[1 0 0 L3 ; 0 1 0 0 ; 0 0 1 0 ; 0 0 0 1];
+    TT2 = A1*A2*A3;
+    p3 = TT2(1:3,4);
+    line([p2(1) p3(1)],[p2(2) p3(2)],[p2(3) p3(3)],'color' , [0.2 0.2 0.2], 'linewidth', 1.7)  %Imprime tercer eslab�n
+    %TERMINA TERCER ESLAB�N
+    
+    %COMIENZA A IMPRIMIR EJES COORDENADOS UNITARIOS 
+    ejeX1 = A1(1:3,1);              %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial X1
+    ejeY1 = A1(1:3,2);              %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Y1
+    ejeZ1 = A1(1:3,3);              %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Z1 
+    line([p0(1) ejeX1(1)],[p0(2) ejeX1(2)],[p0(3) ejeX1(3)], 'color', [1 0 0], 'linewidth',1.7) %Imprime X1 Red
+    line([p0(1) ejeY1(1)],[p0(2) ejeY1(2)],[p0(3) ejeY1(3)], 'color', [0 1 0], 'linewidth',1.7) %Imprime Y1 GReen
+    line([p0(1) ejeZ1(1)],[p0(2) ejeZ1(2)],[p0(3) ejeZ1(3)], 'color', [0 0 1], 'linewidth',1.7) %Imprime Z1 Blue  
+    
+    ejeX2 = p1+TT1(1:3,1);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial X2
+    ejeY2 = p1+TT1(1:3,2);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Y2
+    ejeZ2 = p1+TT1(1:3,3);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Z2 
+    line([p1(1) ejeX2(1)],[p1(2) ejeX2(2)],[p1(3) ejeX2(3)], 'color', [1 0 0], 'linewidth',1.7) %Imprime X2 Red
+    line([p1(1) ejeY2(1)],[p1(2) ejeY2(2)],[p1(3) ejeY2(3)], 'color', [0 1 0], 'linewidth',1.7) %Imprime Y2 GReen
+    line([p1(1) ejeZ2(1)],[p1(2) ejeZ2(2)],[p1(3) ejeZ2(3)], 'color', [0 0 1], 'linewidth',1.7) %Imprime Z2 Blue  
+    
+    ejeX3 = p2+TT2(1:3,1);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial X3
+    ejeY3 = p2+TT2(1:3,2);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Y3
+    ejeZ3 = p2+TT2(1:3,3);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Z3 
+    line([p2(1) ejeX3(1)],[p2(2) ejeX3(2)],[p2(3) ejeX3(3)], 'color', [1 0 0], 'linewidth',1.7) %Imprime X2 Red
+    line([p2(1) ejeY3(1)],[p2(2) ejeY3(2)],[p2(3) ejeY3(3)], 'color', [0 1 0], 'linewidth',1.7) %Imprime Y2 GReen
+    line([p2(1) ejeZ3(1)],[p2(2) ejeZ3(2)],[p2(3) ejeZ3(3)], 'color', [0 0 1], 'linewidth',1.7) %Imprime Z2 Blue 
+    
+    ejeX4 = p3+TT2(1:3,1);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial X3
+    ejeY4 = p3+TT2(1:3,2);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Y3
+    ejeZ4 = p3+TT2(1:3,3);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Z3 
+    line([p3(1) ejeX4(1)],[p3(2) ejeX4(2)],[p3(3) ejeX4(3)], 'color', [1 0 0], 'linewidth',1.7) %Imprime X2 Red
+    line([p3(1) ejeY4(1)],[p3(2) ejeY4(2)],[p3(3) ejeY4(3)], 'color', [0 1 0], 'linewidth',1.7) %Imprime Y2 GReen
+    line([p3(1) ejeZ4(1)],[p3(2) ejeZ4(2)],[p3(3) ejeZ4(3)], 'color', [0 0 1], 'linewidth',1.7) %Imprime Z2 Blue 
+    %TERMINA DE IMPRIMIR EJES COORDENADOS UNITARIOS 
+    
+    pause(0.1)
+end
+
+%%% CICLO PARA THETA 3
+for i=1:length(angVec3)
+    clf
+   
+    line ([-15 15],[0 0],[0 0], 'color', [1 0 0], 'linewidth',1);     %Eje X Red
+    line ([0 0],[-15 15],[0 0], 'color', [0 1 0], 'linewidth',1);     %Eje Y Green
+    line ([0 0],[0 0],[-15 15], 'color', [0 0 1], 'linewidth',1);     %Eje Z Blue
+   
+    grid on
+    view(120,30)    %Formato para ver en 3D al inicio el plano
+    
+    %INICIA PRIMER ESLB�N
+    p1 = A1(1:3,4);
+    line([p0(1) p1(1)],[p0(2) p1(2)],[p0(3) p1(3)],'color' , [0.2 0.2 0.2], 'linewidth', 1.7)  %Imprime primer eslab�n
+    %TERMINA PRIMER ESLAB�N
+    
+    %INICIA SEGUNDO ESLAB�N
+    p2 = TT1(1:3,4);
+    line([p1(1) p2(1)],[p1(2) p2(2)],[p1(3) p2(3)],'color' , [0.2 0.2 0.2], 'linewidth', 1.7)  %Imprime segundo eslab�n
+    %TERMINA SEGUNDO ESLAB�N
+    
+    %INICIA TERCER ESLAB�N
+    A3=[cos(angVec3(i)) -sin(angVec3(i)) 0 L3*cos(angVec3(i)) ; sin(angVec3(i)) cos(angVec3(i)) 0 L3*sin(angVec3(i)) ; 0 0 1 0 ; 0 0 0 1 ];
+    TT2 = A1*A2*A3;
+    p3 = TT2(1:3,4);
+    line([p2(1) p3(1)],[p2(2) p3(2)],[p2(3) p3(3)],'color' , [0.2 0.2 0.2], 'linewidth', 1.7)  %Imprime tercer eslab�n   
+    %TERMINA TERCER ESLAB�N
+    
+    %COMIENZA A IMPRIMIR EJES COORDENADOS UNITARIOS 
+    ejeX1 = A1(1:3,1);              %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial X1
+    ejeY1 = A1(1:3,2);              %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Y1
+    ejeZ1 = A1(1:3,3);              %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Z1 
+    line([p0(1) ejeX1(1)],[p0(2) ejeX1(2)],[p0(3) ejeX1(3)], 'color', [1 0 0], 'linewidth',1.7) %Imprime X1 Red
+    line([p0(1) ejeY1(1)],[p0(2) ejeY1(2)],[p0(3) ejeY1(3)], 'color', [0 1 0], 'linewidth',1.7) %Imprime Y1 GReen
+    line([p0(1) ejeZ1(1)],[p0(2) ejeZ1(2)],[p0(3) ejeZ1(3)], 'color', [0 0 1], 'linewidth',1.7) %Imprime Z1 Blue  
+    
+    ejeX2 = p1+TT1(1:3,1);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial X2
+    ejeY2 = p1+TT1(1:3,2);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Y2
+    ejeZ2 = p1+TT1(1:3,3);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Z2 
+    line([p1(1) ejeX2(1)],[p1(2) ejeX2(2)],[p1(3) ejeX2(3)], 'color', [1 0 0], 'linewidth',1.7) %Imprime X2 Red
+    line([p1(1) ejeY2(1)],[p1(2) ejeY2(2)],[p1(3) ejeY2(3)], 'color', [0 1 0], 'linewidth',1.7) %Imprime Y2 GReen
+    line([p1(1) ejeZ2(1)],[p1(2) ejeZ2(2)],[p1(3) ejeZ2(3)], 'color', [0 0 1], 'linewidth',1.7) %Imprime Z2 Blue  
+    
+    ejeX3 = p2+TT2(1:3,1);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial X3
+    ejeY3 = p2+TT2(1:3,2);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Y3
+    ejeZ3 = p2+TT2(1:3,3);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Z3 
+    line([p2(1) ejeX3(1)],[p2(2) ejeX3(2)],[p2(3) ejeX3(3)], 'color', [1 0 0], 'linewidth',1.7) %Imprime X2 Red
+    line([p2(1) ejeY3(1)],[p2(2) ejeY3(2)],[p2(3) ejeY3(3)], 'color', [0 1 0], 'linewidth',1.7) %Imprime Y2 GReen
+    line([p2(1) ejeZ3(1)],[p2(2) ejeZ3(2)],[p2(3) ejeZ3(3)], 'color', [0 0 1], 'linewidth',1.7) %Imprime Z2 Blue 
+    
+    ejeX4 = p3+TT2(1:3,1);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial X3
+    ejeY4 = p3+TT2(1:3,2);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Y3
+    ejeZ4 = p3+TT2(1:3,3);           %Rescata valores de matr�z A1 los cuales indican la descomposici�n vectorial Z3 
+    line([p3(1) ejeX4(1)],[p3(2) ejeX4(2)],[p3(3) ejeX4(3)], 'color', [1 0 0], 'linewidth',1.7) %Imprime X2 Red
+    line([p3(1) ejeY4(1)],[p3(2) ejeY4(2)],[p3(3) ejeY4(3)], 'color', [0 1 0], 'linewidth',1.7) %Imprime Y2 GReen
+    line([p3(1) ejeZ4(1)],[p3(2) ejeZ4(2)],[p3(3) ejeZ4(3)], 'color', [0 0 1], 'linewidth',1.7) %Imprime Z2 Blue 
+    %TERMINA DE IMPRIMIR EJES COORDENADOS UNITARIOS 
+    
+    pause(0.1)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
